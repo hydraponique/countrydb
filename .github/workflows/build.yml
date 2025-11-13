@@ -41,6 +41,23 @@ jobs:
         mkdir -p geo/geoip
         python scripts/parse.py
 
+    - name: Install mihomo
+      run: |
+        M_VER=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | \
+                grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+        echo "Latest mihomo version: $M_VER"
+        wget -O mihomo.gz https://github.com/MetaCubeX/mihomo/releases/download/v${M_VER}/mihomo-linux-amd64-v${M_VER}.gz
+        gunzip -f mihomo.gz
+        chmod +x mihomo
+        sudo mv mihomo /usr/local/bin/
+        mihomo -v
+
+    - name: Convert .lst to .mrs
+      run: |
+        for file in geo/geoip/*.lst; do
+          mihomo convert-ruleset ipcidr text "$file" "${file%.lst}.mrs"
+        done
+
     - name: Commit and push generated files
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

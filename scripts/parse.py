@@ -16,9 +16,17 @@ with gzip.open(INPUT_FILE, "rt", encoding="utf-8") as f:
         country_code = row.get("country_code", "").strip()
         network = row.get("network", "").strip()
         if country_code and network:
+            if "/" not in network:
+                network += "/32"
             countries[country_code].append(network)
 
 for code, networks in countries.items():
-    output_file = OUTPUT_DIR / f"{code.lower()}.lst"
-    with open(output_file, "w", encoding="utf-8") as f:
+    lst_file = OUTPUT_DIR / f"{code.lower()}.lst"
+    with open(lst_file, "w", encoding="utf-8") as f:
         f.write("\n".join(networks))
+
+    yaml_file = OUTPUT_DIR / f"{code.lower()}.yaml"
+    with open(yaml_file, "w", encoding="utf-8") as f:
+        f.write("payload:\n")
+        for net in networks:
+            f.write(f"    - {net}\n")
