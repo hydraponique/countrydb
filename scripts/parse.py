@@ -1,5 +1,6 @@
 import csv
 import gzip
+import ipaddress
 from collections import defaultdict
 from pathlib import Path
 
@@ -15,10 +16,13 @@ with gzip.open(INPUT_FILE, "rt", encoding="utf-8") as f:
     for row in reader:
         country_code = row.get("country_code", "").strip()
         network = row.get("network", "").strip()
-        if country_code and network:
-            if "/" not in network:
-                network += "/32"
-            countries[country_code].append(network)
+        if not country_code or not network:
+            continue
+        try:
+            net_obj = ipaddress.ip_network(network, strict=False)
+        except ValueError:
+            continue
+        countries[country_code].append(str(net_obj))
 
 for code, networks in countries.items():
     lst_file = OUTPUT_DIR / f"{code.lower()}.lst"
