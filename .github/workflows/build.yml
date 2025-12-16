@@ -83,5 +83,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          gh workflow run build.yaml --repo ${{ github.repository }} --ref geoip.dat
-          gh workflow run build.yaml --repo ${{ github.repository }} --ref ru-by-geoip-dat
+          gh workflow run "Build IP lists" --repo ${{ github.repository }} --ref geoip.dat
+          gh workflow run "Build IP lists" --repo ${{ github.repository }} --ref ru-by-geoip-dat
