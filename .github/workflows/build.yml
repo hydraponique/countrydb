@@ -71,21 +71,18 @@ jobs:
         git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
 
-  dispatch:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Install and authenticate GitHub CLI
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          sudo apt update
-          sudo apt install -y gh
-          gh auth login --with-token <<< "$GH_TOKEN"
+    dispatch:
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        - name: Install GitHub CLI
+          run: |
+            sudo apt update
+            sudo apt install -y gh
 
-      - name: Trigger builds in other branches
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          gh workflow run build.yaml --ref geoip.dat
-          gh workflow run build.yaml --ref ru-by-geoip-dat
+        - name: Trigger builds in other branches
+          env:
+            GH_TOKEN: ${{ secrets.GH_PAT }}
+          run: |
+            gh workflow run build.yaml --ref geoip.dat
+            gh workflow run build.yaml --ref ru-by-geoip-dat
