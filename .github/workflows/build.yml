@@ -44,8 +44,14 @@ jobs:
 
     - name: Install mihomo
       run: |
-        M_VER=$(curl -s https://api.github.com/repos/MetaCubeX/mihomo/releases/latest | \
-                grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+        M_VER=$(curl -fSL https://api.github.com/repos/MetaCubeX/mihomo/releases/latest \
+          | grep '"tag_name":' \
+          | sed -E 's/.*"v([^"]+)".*/\1/')
+    
+        if [[ -z "$M_VER" ]]; then
+          echo "❌ GitHub API returned no tag_name"
+          exit 1
+        fi
         echo "Latest mihomo version: $M_VER"
         wget -O mihomo.gz https://github.com/MetaCubeX/mihomo/releases/download/v${M_VER}/mihomo-linux-amd64-v${M_VER}.gz
         gunzip -f mihomo.gz
