@@ -34,12 +34,11 @@ jobs:
 
     - name: Download CSV
       run: |
-        curl -L "https://ipinfo.io/data/ipinfo_lite.csv.gz?_src=frontend&token=${{ secrets.IPINFO_TOKEN }}" -o ipinfo_lite.csv.gz
+        curl -L "https://raw.githubusercontent.com/sapics/ip-location-db/refs/heads/main/dbip-geo-whois-asn-country/dbip-geo-whois-asn-country-ipv4.csv" -o dbip-geo-whois-asn-country-ipv4.csv
 
     - name: Generate country lists
       run: |
         mkdir -p geo/geoip
-        mkdir -p CDN
         python scripts/parse.py
 
     - name: Install mihomo
@@ -72,23 +71,5 @@ jobs:
         git config user.name "IP List Generator"
         git config user.email "noreply@myrepo.com"
         git add geo/*
-        git add CDN/*
         git commit -m "Update country IP lists" || echo "No changes"
         git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-
-
-  dispatch:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Install GitHub CLI
-        run: |
-          sudo apt update
-          sudo apt install -y gh
-
-      - name: Trigger builds in other branches
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          gh workflow run "Build IP lists" --repo ${{ github.repository }} --ref geoip.dat
-          gh workflow run "Build IP lists" --repo ${{ github.repository }} --ref ru-by-geoip-dat
