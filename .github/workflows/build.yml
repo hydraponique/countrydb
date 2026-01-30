@@ -67,9 +67,14 @@ jobs:
     - name: Commit and push generated files
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: date
       run: |
-        git config user.name "IP List Generator"
-        git config user.email "noreply@myrepo.com"
+        echo "DATE=$(date -u +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+        echo "TAG_NAME=build-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+
+
+        git config user.email "hydraponique@users.noreply.github.com"
+        git config user.name "hydraponique"
         git add geo/*
-        git commit -m "Update country IP lists" || echo "No changes"
+        git commit -m "Update country IP lists ${{ env.DATE }}" || echo "No changes"
         git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
