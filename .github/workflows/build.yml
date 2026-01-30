@@ -35,11 +35,23 @@ jobs:
     - name: Download CSV
       run: |
         curl -L "https://raw.githubusercontent.com/sapics/ip-location-db/refs/heads/main/dbip-geo-whois-asn-country/dbip-geo-whois-asn-country-ipv4.csv" -o dbip-geo-whois-asn-country-ipv4.csv
-
+        curl -L "https://raw.githubusercontent.com/sapics/ip-location-db/refs/heads/main/geolite2-geo-whois-asn-country/geolite2-geo-whois-asn-country-ipv4.csv" -o geolite2-geo-whois-asn-country-ipv4.csv
+        curl -L "https://raw.githubusercontent.com/sapics/ip-location-db/refs/heads/main/geo-whois-asn-country/geo-whois-asn-country-ipv4.csv" -o geo-whois-asn-country-ipv4.csv
+        curl -L "https://raw.githubusercontent.com/sapics/ip-location-db/refs/heads/main/dbip-country/dbip-country-ipv4.csv" -o dbip-country-ipv4.csv
+        curl -L "https://raw.githubusercontent.com/sapics/ip-location-db/refs/heads/main/geolite2-country/geolite2-country-ipv4.csv" -o geolite2-country-ipv4.csv
+        
     - name: Generate country lists
       run: |
-        mkdir -p geo/geoip
-        python scripts/parse.py
+        mkdir -p output/dbip-geo-whois-asn-country-ipv4
+        mkdir -p output/geolite2-geo-whois-asn-country-ipv4
+        mkdir -p output/geo-whois-asn-country-ipv4
+        mkdir -p output/dbip-country-ipv4
+        mkdir -p output/geolite2-country-ipv4
+        python scripts/parse.py dbip-geo-whois-asn-country-ipv4
+        python scripts/parse.py geolite2-geo-whois-asn-country-ipv4
+        python scripts/parse.py geo-whois-asn-country-ipv4
+        python scripts/parse.py dbip-country-ipv4
+        python scripts/parse.py geolite2-country-ipv4
 
     - name: Install mihomo
       run: |
@@ -75,6 +87,6 @@ jobs:
 
         git config user.email "hydraponique@users.noreply.github.com"
         git config user.name "hydraponique"
-        git add geo/*
+        git add output/*
         git commit -m "Update country IP lists ${{ env.DATE }}" || echo "No changes"
         git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git

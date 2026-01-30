@@ -3,8 +3,8 @@ import ipaddress
 from collections import defaultdict
 from pathlib import Path
 
-INPUT_FILE = "dbip-geo-whois-asn-country-ipv4.csv"
-OUTPUT_DIR = Path("geo/geoip")
+INPUT_FILE = "$1.csv"
+OUTPUT_DIR = Path("output/$1")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 countries = defaultdict(list)
