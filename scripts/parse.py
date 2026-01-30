@@ -6,7 +6,7 @@ from pathlib import Path
 
 input_name = sys.argv[1]
 INPUT_FILE = f"{input_name}.csv"
-OUTPUT_DIR = Path(f"geo/{input_name}")
+OUTPUT_DIR = Path(f"output/{input_name}")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 countries = defaultdict(list)
