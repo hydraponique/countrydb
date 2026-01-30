@@ -1,10 +1,12 @@
 import csv
 import ipaddress
+import sys
 from collections import defaultdict
 from pathlib import Path
 
-INPUT_FILE = "$1.csv"
-OUTPUT_DIR = Path("output/$1")
+input_name = sys.argv[1]
+INPUT_FILE = f"{input_name}.csv"
+OUTPUT_DIR = Path(f"geo/{input_name}")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 countries = defaultdict(list)
